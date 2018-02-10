@@ -1,0 +1,65 @@
+#Licence: Public Domain
+#
+#pyextra.py
+#
+"""Additional helping facilities
+
+Unit tests are in the current directory (test_pyextra.py)"""
+
+#standard modules:
+import time
+from sys import stdout
+
+__all__ = ["Timer", "PrintHelper", "Validators"]
+
+class Timer(object):
+    """Implements timer running inside 'with' statement"""
+    def __enter__(self):
+        self.__start = time.time()
+        self.__busy = True
+    
+    def __exit__(self, type, value, traceback):
+        # Error handling here
+        self.__finish = time.time()
+        self.__busy = False
+        
+    def duration_in_seconds(self):
+        return (time.time() if self.__busy 
+                else self.__finish) - self.__start
+
+class PrintHelper:
+    """Helping class designed as a means to consolidating and providing
+    auxiliary high-usage code for forming textual doohickeys"""
+    class Progress(Timer):
+        def update(self, progress):
+            stdout.write("\r[{0:=3}%]".format(int(progress)))
+            stdout.flush()
+
+class Validators:
+    """Helping class for sequence handling"""
+    #In many implementations, sequence-wise, handling of indices runs by 
+    #the same way; consequently, I wrote a snippet of the high-usage 
+    #code for validation:
+    @staticmethod
+    def handleindex(index, length):
+        """
+        SequenceHelper.handleindex(index, length) -> verified index
+
+        * inverses netagive indices so that 'index = (index + length)'
+        * raises IndexError if the specified index is out of range
+        * raises TypeError if the specified index does not implement 
+        integer class(int)
+        """
+        if isinstance(index, int):
+            if index < 0: #handle negative indices
+                index += length
+            if index < 0 or not index < length:
+                raise IndexError("The specified index "
+                        "{} is out of range [{},{}]".format(
+                            index, 0, length))
+        else:
+            raise TypeError(
+                    'invalid type of the specified index, indices must be '
+                    'integers, not {} ({} given)'.format(
+                        type(index), index))
+        return index

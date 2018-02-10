@@ -1,0 +1,72 @@
+#Licence: Public Domain
+#LGPL-parts have been used in the form of the related third party inputs
+#
+#imgsnipper.py
+#
+"""Implements facilities for chopping and snipping image parts as a means to
+further operations, image processing-wise.
+
+Unit tests are in the current directory (test_imgsnipper.py)"""
+#standard modules:
+from collections.abc import Sequence as _Sequence
+from collections.abc import MutableSequence as _MuatableSeqence
+#third-party modules:
+from pygame import image, PixelArray
+#local(included) mosules:
+
+class ImageSnipper(_Sequence):
+    """
+    Abstract base class for all implementations snipping image blocks
+    """
+    def __init__(self, filepath, bwidth, bheight):
+        """
+        I.__init__(filepath, width, height) -> ImageSniper
+        """
+        surface = image.load(filepath)
+        bwidth, bheight = int(bwidth), int(bheight)
+        if surface.get_size() < self.__bwidth, self.__bheight:
+            raise ValueError("Snippet dimmensions are out of range."
+                    "Image size:{} < Block size:{}".format(
+                        surface.get_size(), (bwidth, bheight)))
+
+        self.__bwidth, self.__bheight = bwidth, bheight
+        self._pxarray = PixelArray(surface)
+
+    @property
+    def pxarray(self):
+        """
+        I.pxarray -> pygame.PixelArray
+        
+        Returns the pixel array of the source image
+        """
+        return self._pxarray
+
+    @property
+    def bshape(self):
+        """
+        I.bshape -> tuple -- block dimmensions -- (width, height)
+
+        Returns the block size by giving the length of each dimmension.
+        It is the same as tuple(I.bwidth, I.bheight).
+        """
+        return self.bwidth, self.bheight
+
+    @property
+    def bwidth(self):
+        """
+        I.bwidth -> int -- block width
+
+        Returns the width of the block in pixels
+        """
+        return self.__bwidth
+
+    @property
+    def bheight(self):
+        """
+        I.bheight -> int -- block height
+        
+        Returns the height of the block in pixels
+        """
+        return self.__height
+
+class RectangularSnipper(ImageSnipper)

@@ -1,0 +1,104 @@
+#Licence: Public Domain
+#
+#rgbneuro.py
+#
+"""Provides classes for setting a multi-network off.
+
+Unit tests are in the current directory (test_rgbneuro.py)
+"""
+#standard modules:
+from sys import path
+from abc import abstractproperty
+from collections.abc import Sequence as _Sequence
+from collections.abc import MutableSequence as _MuatableSeqence
+#related modules:
+from pygame import image, PixelArray
+#included (local) modules:
+path.append("multinet")
+path.append("multinet/nn")
+from netfeeder import NetFeederBase
+
+__all__ = ["ImageSelection", "RGBFeeder", "RGBNeuro"]
+
+class ImageSnipper(_Sequence):
+    """
+    Abstract base class for all implementations snipping image blocks
+    """
+    def __init__(self, filepath, bwidth, bheight):
+        """
+        I.__init__(filepath, width, height) -> ImageSniper
+        """
+        surface = image.load(filepath)
+        bwidth, bheight = int(bwidth), int(bheight)
+        if surface.get_size() < self.__bwidth, self.__bheight:
+            raise ValueError("Snippet dimmensions are out of range."
+                    "Image size:{} < Block size:{}".format(
+                        surface.get_size(), (bwidth, bheight)))
+
+        self.__bwidth, self.__bheight = bwidth, bheight
+        self._pxarray = PixelArray(surface)
+
+    @property
+    def pxarray(self):
+        """
+        I.pxarray -> pygame.PixelArray
+        
+        Returns the pixel array of the source image
+        """
+        return self._pxarray
+
+    @property
+    def bshape(self):
+        """
+        I.bshape -> tuple -- block dimmensions -- (width, height)
+
+        Returns the block size by giving the length of each dimmension.
+        It is the same as tuple(I.bwidth, I.bheight).
+        """
+        return self.bwidth, self.bheight
+
+    @property
+    def bwidth(self):
+        """
+        I.bwidth -> int -- block width
+
+        Returns the width of the block in pixels
+        """
+        return self.__bwidth
+
+    @property
+    def bheight(self):
+        """
+        I.bheight -> int -- block height
+        
+        Returns the height of the block in pixels
+        """
+        return self.__height
+
+class RectangularSnipper(ImageSnipper)
+
+class ImageSelection(_MutableSequence):
+    """
+    This class provides the concrete representation of image training data 
+    that is used to maintain and manage image learning selection.
+    """
+    def __init__(self, ):
+
+
+class RGBFeeder(NetFeederBase):
+    """
+    Class for extracting image
+    """
+    def __init__(self, network, files, ):
+        NetFeederBase.__init__(self, network)
+        self.files
+        self._buffer
+
+    def load_buffer(self):
+
+    def pick(self):
+        pass
+
+class RGBNeuro(object):
+
+
